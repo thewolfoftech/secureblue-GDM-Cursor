@@ -1,0 +1,29 @@
+name: secureblue-GDM-Cursor
+description: Secureblue with We10XOS-cursors for GDM
+base-image: ghcr.io/secureblue/silverblue-main-hardened
+image-version: latest
+
+modules:
+  - type: files
+    files:
+      - source: We10XOS-cursors
+        destination: /usr/share/icons/We10XOS-cursors
+
+  - type: script
+    snippets:
+      - |
+        set -euo pipefail
+
+        echo "=== Installing We10XOS-cursors system-wide ==="
+
+        mkdir -p /usr/share/icons/default
+        ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
+
+        printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
+
+        mkdir -p /usr/share/glib-2.0/schemas
+        printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
+
+        glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+        echo "=== We10XOS-cursors installation completed successfully ==="
