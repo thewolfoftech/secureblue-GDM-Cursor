@@ -34,5 +34,5 @@ jobs:
         with:
           recipe: ${{ matrix.recipe }}
           push: true
-          # ניסיון לכבות חתימה דרך build-opts
+          
           build-opts: "--no-sign"
