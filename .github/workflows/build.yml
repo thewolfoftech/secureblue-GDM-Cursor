@@ -33,5 +33,6 @@ jobs:
         uses: blue-build/github-action@v1
         with:
           recipe: ${{ matrix.recipe }}
-          no-sign: true
           push: true
+          # ניסיון לכבות חתימה דרך build-opts
+          build-opts: "--no-sign"
