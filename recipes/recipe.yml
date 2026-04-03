@@ -5,15 +5,17 @@ image-version: latest
 no-sign: true
 
 modules:
+  - type: files
+    files:
+      - source: ./We10XOS-cursors
+        destination: /usr/share/icons/We10XOS-cursors
+
   - type: script
     snippets:
       - |
         set -euo pipefail
 
         echo "=== Installing We10XOS-cursors system-wide ==="
-
-        rm -rf /usr/share/icons/We10XOS-cursors
-        cp -a /home/leo/.local/share/icons/We10XOS-cursors /usr/share/icons/We10XOS-cursors
 
         mkdir -p /usr/share/icons/default
         ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
