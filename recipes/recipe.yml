@@ -1,40 +1,33 @@
----
-# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
-name: template
-# description will be included in the image's metadata
-description: This is my personal OS image.
+name: secureblue-we10xos
+description: Secureblue with We10XOS-cursors for GDM
+base-image: ghcr.io/secureblue/silverblue-main-hardened
+image-version: latest
 
-# the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 42 # latest is also supported if you want new updates ASAP
-
-# module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+  - type: script
+    snippets:
+      - |
+        set -euo pipefail
 
-  - type: dnf
-    repos:
-      copr:
-        - atim/starship
-    install:
-      packages:
-        - micro
-        - starship
-    remove:
-      packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
-        - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        echo "=== Installing We10XOS-cursors system-wide ==="
 
-  - type: default-flatpaks
-    configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
+        # העתקת התמה
+        rm -rf /usr/share/icons/We10XOS-cursors
+        cp -a /home/leo/.local/share/icons/We10XOS-cursors /usr/share/icons/We10XOS-cursors
+
+        # יצירת default theme ל-GDM
+        mkdir -p /usr/share/icons/default
+        ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
+
+        printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
+
+        # gschema override
+        mkdir -p /usr/share/glib-2.0/schemas
+        printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
+
+        glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+        echo "=== We10XOS-cursors installation completed successfully ==="      - notify: true # Send notification after install/uninstall is finished (true/false)
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
