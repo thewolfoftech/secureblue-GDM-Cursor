@@ -1,4 +1,4 @@
-name: secureblue-we10xos
+name: secureblue-GDM-Cursor
 description: Secureblue with We10XOS-cursors for GDM
 base-image: ghcr.io/secureblue/silverblue-main-hardened
 image-version: latest
