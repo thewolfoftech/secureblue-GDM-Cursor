@@ -1,30 +1,32 @@
-name: secureblue-GDM-Cursor
-description: Secureblue with We10XOS-cursors for GDM
-base-image: ghcr.io/secureblue/silverblue-main-hardened
-image-version: latest
-no-sign: true
+name: Build Custom Image
 
-modules:
-  - type: files
-    files:
-      - source: ./We10XOS-cursors
-        destination: /usr/share/icons/We10XOS-cursors
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-  - type: script
-    snippets:
-      - |
-        set -euo pipefail
+concurrency:
+  group: \( {{ github.workflow }}- \){{ github.ref || github.run_id }}
+  cancel-in-progress: true
 
-        echo "=== Installing We10XOS-cursors system-wide ==="
+jobs:
+  bluebuild:
+    name: Build Custom Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
 
-        mkdir -p /usr/share/icons/default
-        ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
-        printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
-
-        mkdir -p /usr/share/glib-2.0/schemas
-        printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
-
-        glib-compile-schemas /usr/share/glib-2.0/schemas/
-
-        echo "=== We10XOS-cursors installation completed successfully ==="
+      - name: Build Custom Image
+        uses: blue-build/github-action@v1
+        with:
+          recipe: recipe.yml
+          no-sign: true
+          push: true
