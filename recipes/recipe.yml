@@ -6,33 +6,23 @@ image-version: latest
 modules:
   - type: script
     snippets:
-      - |
-        set -euo pipefail
+      - name: install-we10xos-cursor
+        run: |
+          set -euo pipefail
 
-        echo "=== Installing We10XOS-cursors system-wide ==="
+          echo "=== Installing We10XOS-cursors system-wide ==="
 
-        
-        rm -rf /usr/share/icons/We10XOS-cursors
-        cp -a /home/leo/.local/share/icons/We10XOS-cursors /usr/share/icons/We10XOS-cursors
+          rm -rf /usr/share/icons/We10XOS-cursors
+          cp -a /home/leo/.local/share/icons/We10XOS-cursors /usr/share/icons/We10XOS-cursors
 
-        
-        mkdir -p /usr/share/icons/default
-        ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
+          mkdir -p /usr/share/icons/default
+          ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
 
-        printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
+          printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
 
-        
-        mkdir -p /usr/share/glib-2.0/schemas
-        printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
+          mkdir -p /usr/share/glib-2.0/schemas
+          printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
 
-        glib-compile-schemas /usr/share/glib-2.0/schemas/
+          glib-compile-schemas /usr/share/glib-2.0/schemas/
 
-        echo "=== We10XOS-cursors installation completed successfully ==="      - notify: true # Send notification after install/uninstall is finished (true/false)
-        scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
-          - org.mozilla.firefox
-          - org.gnome.Loupe
-      - scope: user # Also add Flathub user repo, but no user packages
-
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+          echo "=== We10XOS-cursors installation completed successfully ==="
