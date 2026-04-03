@@ -11,17 +11,17 @@ modules:
 
         echo "=== Installing We10XOS-cursors system-wide ==="
 
-        # העתקת התמה
+        
         rm -rf /usr/share/icons/We10XOS-cursors
         cp -a /home/leo/.local/share/icons/We10XOS-cursors /usr/share/icons/We10XOS-cursors
 
-        # יצירת default theme ל-GDM
+        
         mkdir -p /usr/share/icons/default
         ln -sf ../We10XOS-cursors/cursors /usr/share/icons/default/cursors
 
         printf '[Icon Theme]\nName=Default\nComment=We10XOS Cursor Theme for GDM\nInherits=We10XOS-cursors\nDirectories=cursors\n' > /usr/share/icons/default/index.theme
 
-        # gschema override
+        
         mkdir -p /usr/share/glib-2.0/schemas
         printf '[org.gnome.desktop.interface]\ncursor-theme=We10XOS-cursors\n' > /usr/share/glib-2.0/schemas/99_we10xos-cursor.gschema.override
 
