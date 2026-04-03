@@ -7,7 +7,7 @@ no-sign: true
 modules:
   - type: files
     files:
-      - source: ./We10XOS-cursors
+      - source: We10XOS-cursors
         destination: /usr/share/icons/We10XOS-cursors
 
   - type: script
